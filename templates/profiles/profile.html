@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile | Snippet Hub{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header text-center">
+        <img src="{{ user.avatar or '/static/default-avatar.jpg' }}" alt="Avatar" class="rounded-circle" width="150" height="150">
+        <h3 class="mt-3">{{ user.name }}</h3>
+        <p class="text-muted">{{ user.email }}</p>
+    </div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="avatar" class="form-label">Change Avatar</label>
+                <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Profile Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3">{{ user.description }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+<h4>Your Snippets</h4>
+<div class="mb-4">
+    <a href="{{ url_for('auth.main.profile.create_snippet') }}" class="btn btn-success">Create New Snippet</a>
+</div>
+
+<div>
+    {% for snippet in snippets %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">{{ snippet.title }}</h5>
+                <p class="card-text text-muted">{{ snippet.language }}</p>
+                <p class="card-text">{{ snippet.description }}</p>
+                <a href="{{ url_for('auth.main.comment_snippet', snippet_id=snippet.id) }}" class="btn btn-primary">View Snippet</a>
+                {% if snippet.author_id == g.user[0] %}
+                    <a href="{{ url_for('auth.main.profile.edit_snippet', snippet_id=snippet.id) }}" class="btn btn-warning">Edit</a>
+                    <form id="delete-form" action="{{ url_for('auth.main.profile.delete_snippet', snippet_id=snippet.id) }}" method="post" style="display:inline;">
+                        <button type="submit" id="delete-btn" class="btn btn-danger" data-snippet-id="{{ snippet.id }}">Delete</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

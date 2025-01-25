@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign Up | Snippet Hub{% endblock %}
+
+{% block content %}
+<div class="card mx-auto shadow-lg p-4" style="max-width: 400px;">
+    <h2 class="text-center text-primary">Sign Up</h2>
+    <p class="text-center">Join Snippet Hub and start sharing your code snippets today!</p>
+    <form method="post">
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Choose a username" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Create a password" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+    </form>
+    <p class="text-center mt-3">Already have an account? <a href="{{ url_for('auth.signin') }}" class="text-decoration-none">Sign In</a></p>
+</div>
+{% endblock %}

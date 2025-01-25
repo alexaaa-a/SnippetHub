@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Snippet | Snippet Hub{% endblock %}
+
+{% block content %}
+<h2>Create New Snippet</h2>
+<form method="post">
+    <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" class="form-control" id="title" name="title" required>
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="language" class="form-label">Language</label>
+        <input type="text" class="form-control" id="language" name="language" required>
+    </div>
+    <div class="mb-3">
+        <label for="code" class="form-label">Code</label>
+        <textarea class="form-control" id="code" name="code" rows="5" required></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="tags" class="form-label">Tags (separate with commas)</label>
+        <input type="text" class="form-control" id="tags" name="tags" placeholder="e.g. Python, Flask, Web" required>
+    </div>
+    <button type="submit" class="btn btn-success">Create Snippet</button>
+</form>
+{% endblock %}

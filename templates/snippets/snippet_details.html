@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Snippet Detail | Snippet Hub{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h3>{{ snippet.title }}</h3>
+        <p class="text-muted">By {{ snippet.author }} | {{ snippet.created_at.strftime('%Y-%m-%d') }}</p>
+        <p class="text-muted">Language: {{ snippet.language }}</p>
+        <div>
+            {% for tag in snippet.tags %}
+                <span class="badge bg-info text-dark">{{ tag }}</span>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="card-body">
+        <p>{{ snippet.description }}</p>
+        <pre class="bg-light p-3 border rounded">{{ snippet.code }}</pre>
+    </div>
+</div>
+
+<h4>Comments</h4>
+<div class="mb-4">
+    {% if g.user %}
+        <form method="post">
+            <div class="mb-3">
+                <textarea name="comment" class="form-control" placeholder="Write your comment..." rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Post Comment</button>
+        </form>
+    {% else %}
+        <p><a href="{{ url_for('auth.signin') }}">Sign in</a> to post comments.</p>
+    {% endif %}
+</div>
+
+<div>
+    {% if comments %}
+        {% for comment in comments %}
+            <div class="border p-3 mb-3">
+                <p><strong>{{ comment[1] }}</strong> ({{ comment[2].strftime('%Y-%m-%d %H:%M') }}):</p>
+                <p>{{ comment[0] }}</p>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Results | Snippet Hub{% endblock %}
+
+{% block content %}
+<h2 class="text-primary mb-4">Search Results for "{{ query }}"</h2>
+
+{% if snippets %}
+    <div class="row">
+        {% for snippet in snippets %}
+            <div class="col-md-6">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">{{ snippet.title }}</h5>
+                        <p class="card-text text-muted">{{ snippet.description | truncate(100) }}</p>
+                        <p class="card-text">
+                            <span class="badge bg-info text-dark">{{ snippet.language }}</span>
+                        </p>
+                        <a href="{{ url_for('auth.main.comment_snippet', snippet_id=snippet.id) }}" class="btn btn-sm btn-outline-primary">View More</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="text-muted">No snippets found matching your search query.</p>
+{% endif %}
+{% endblock %}

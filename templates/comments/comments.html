@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Comments | Snippet Hub{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-primary mb-4">Comments for "{{ snippet.title }}"</h2>
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title text-primary">{{ snippet.title }}</h5>
+            <p class="card-text text-muted">{{ snippet.description }}</p>
+            <pre class="bg-light p-3">{{ snippet.code }}</pre>
+            <p class="card-text">
+                <span class="badge bg-info text-dark">{{ snippet.language }}</span>
+                {% for tag in snippet.tags %}
+                <span class="badge bg-secondary">{{ tag }}</span>
+                {% endfor %}
+            </p>
+        </div>
+        <div class="card-footer text-muted">
+            Posted by {{ snippet.author }} on {{ snippet.created_at.strftime('%Y-%m-%d') }}
+        </div>
+    </div>
+
+    <h4 class="text-secondary mb-3">Comments</h4>
+    {% if comments %}
+        <ul class="list-group mb-4">
+            {% for comment in comments %}
+            <li class="list-group-item">
+                <p class="mb-1">{{ comment.content }}</p>
+                <small class="text-muted">By {{ comment.author }} on {{ comment.created_at.strftime('%Y-%m-%d') }}</small>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-muted">No comments yet. Be the first to comment!</p>
+    {% endif %}
+
+    <h4 class="text-secondary mb-3">Add a Comment</h4>
+    <form method="post" action="{{ url_for('auth.main.comment_snippet', snippet_id=snippet.id) }}">
+        <div class="mb-3">
+            <textarea class="form-control" name="comment" rows="4" placeholder="Write your comment here..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Comment</button>
+    </form>
+</div>
+{% endblock %}
