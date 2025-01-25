@@ -1,0 +1,76 @@
+-- Таблица профилей пользователей (один-к-одному)
+CREATE TABLE profiles (
+    id SERIAL PRIMARY KEY,            -- Уникальный идентификатор профиля
+    bio TEXT,                         -- Описание профиля
+    avatar_url VARCHAR(255)           -- URL аватара
+);
+
+-- Таблица пользователей
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,            -- Уникальный идентификатор пользователя
+    name VARCHAR(100) NOT NULL,       -- Имя пользователя
+    email VARCHAR(120) UNIQUE NOT NULL, -- Email пользователя
+    password VARCHAR(512) NOT NULL,   -- Пароль
+    registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Дата регистрации
+    profile_id INTEGER UNIQUE ,        -- Связь один-к-одному с таблицей profiles
+    FOREIGN KEY (profile_id) REFERENCES profiles (id) ON DELETE SET NULL
+);
+
+-- Таблица сниппетов
+CREATE TABLE snippets (
+    id SERIAL PRIMARY KEY,            -- Уникальный идентификатор сниппета
+    title VARCHAR(120) NOT NULL,      -- Название сниппета
+    description TEXT,                 -- Описание сниппета
+    language VARCHAR(50) NOT NULL,    -- Язык программирования
+    code TEXT NOT NULL,               -- Код сниппета
+    author_id INTEGER NOT NULL,       -- Идентификатор автора из таблицы users
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Время создания сниппета
+    FOREIGN KEY (author_id) REFERENCES users (id) ON DELETE CASCADE
+);
+
+-- Таблица тегов
+CREATE TABLE tags (
+    id SERIAL PRIMARY KEY,            -- Уникальный идентификатор тега
+    name VARCHAR(50) NOT NULL UNIQUE  -- Название тега
+);
+
+-- Таблица связи "многие-ко-многим" для сниппетов и тегов
+CREATE TABLE snippet_tags (
+    snippet_id INTEGER NOT NULL,      -- ID сниппета (ссылка на snippets)
+    tag_id INTEGER NOT NULL,          -- ID тега (ссылка на tags)
+    PRIMARY KEY (snippet_id, tag_id),
+    FOREIGN KEY (snippet_id) REFERENCES snippets (id) ON DELETE CASCADE,
+    FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE
+);
+
+-- Таблица комментариев
+CREATE TABLE comments (
+    id SERIAL PRIMARY KEY,            -- Уникальный идентификатор комментария
+    text TEXT NOT NULL,               -- Текст комментария
+    comment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Дата комментария
+    author_id INTEGER NOT NULL,       -- ID автора (связь один-ко-многим с users)
+    snippet_id INTEGER NOT NULL,      -- ID сниппета (связь один-ко-многим с snippets)
+    FOREIGN KEY (author_id) REFERENCES users (id) ON DELETE CASCADE,
+    FOREIGN KEY (snippet_id) REFERENCES snippets (id) ON DELETE CASCADE
+);
+
+-- Таблица избранного
+CREATE TABLE favorites (
+    user_id INTEGER NOT NULL,         -- ID пользователя (ссылка на users)
+    snippet_id INTEGER NOT NULL,      -- ID сниппета (ссылка на snippets)
+    PRIMARY KEY (user_id, snippet_id),
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    FOREIGN KEY (snippet_id) REFERENCES snippets (id) ON DELETE CASCADE
+);
+
+-- Таблица сессий
+CREATE TABLE sessions (
+    id SERIAL PRIMARY KEY,              -- Уникальный идентификатор сессии
+    user_id INTEGER NOT NULL,           -- Идентификатор пользователя из таблицы users
+    session_token TEXT NOT NULL UNIQUE, -- Уникальный токен сессии
+    created_at TIMESTAMP DEFAULT NOW(), -- Начало сессии
+    expires_at TIMESTAMP,               -- Конец сессии
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
+
+
